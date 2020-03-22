@@ -2,7 +2,7 @@ import json
 import logging
 from sqlalchemy import Column, Integer, String, Float, DateTime, Boolean, func
 from iotfunctions import bif
-from mycustom.functions import InvokeModel
+from mycustom.functions import RestInvokeModel
 from iotfunctions.metadata import EntityType
 from iotfunctions.db import Database
 from iotfunctions.base import BaseTransformer
@@ -55,7 +55,7 @@ entity = EntityType(entity_name, db,
                     Column("tool_type", Integer()),
                     Column("speed", Float()),
                     Column("travel_time", Float()),
-                    InvokeModel(
+                    RestInvokeModel(
                                     # uid=IAM_UID,
                                     # password=IAM_PASSWORD,
                                     wml_endpoint=WATSON_ML_ENDPOINT,
