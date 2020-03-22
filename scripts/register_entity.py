@@ -2,7 +2,7 @@ import json
 import logging
 from sqlalchemy import Column, Integer, String, Float, DateTime, Boolean, func
 from iotfunctions import bif
-from mycustom.functions import InvokeModel
+from mycustom.functions import RestInvokeModel
 from iotfunctions.metadata import EntityType
 from iotfunctions.db import Database
 from iotfunctions.base import BaseTransformer
