@@ -10,7 +10,7 @@ When the reader has completed this Code Pattern, they will understand how to:
 * Forward data to external services via REST HTTP call.
 * Build a dashboard using [Maximo Asset Monitor](https://www.ibm.com/support/knowledgecenter/SSQP8H/iot/monitor/index.html) to monitor, visualize, and analyze IOT asset data.
 * Generate alerts when certain results are received.
-<!-- * Deploy, schedule and run custom Python Functions in [Watson IOT Platform Analytics](https://www.ibm.com/support/knowledgecenter/en/SSQP8H/iot/analytics/as_overview.html) to retrieve data from Maximo every 5 minutes. -->
+<!-- * Deploy, schedule and run mycustom Python Functions in [Watson IOT Platform Analytics](https://www.ibm.com/support/knowledgecenter/en/SSQP8H/iot/analytics/as_overview.html) to retrieve data from Maximo every 5 minutes. -->
 
 <!-- [IBM TRIRIGA Building Insights](https://www.ibm.com/support/knowledgecenter/en/SSQP8H/iot/analytics/as_overview.html) -->
 <!-- * Define Assets in -->
@@ -267,7 +267,7 @@ python ./scripts/local_test_of_function.py
 ## 4. Deploy Function
 <!-- * Push function code changes to Github.
 ```
-git add ./custom/functions.py
+git add ./mycustom/functions.py
 git commit -m "my function changes"
 git push origin master
 ``` -->
@@ -405,7 +405,7 @@ def getMeters (self, asset_id = None):
 ```
 These methods query the Maximo OSLC api to receive all buildings and meters that are associated with an Asset derived from the "Building" template
 
-Next, we added these custom methods to the main `execute` method. The result of each method is then loaded into a `response_data` dictionary as a numpy array.
+Next, we added these mycustom methods to the main `execute` method. The result of each method is then loaded into a `response_data` dictionary as a numpy array.
 
 ```
 buildings = self.getBuildings()

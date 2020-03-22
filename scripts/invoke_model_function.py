@@ -2,13 +2,13 @@ import json
 import logging
 from sqlalchemy import Column, Integer, String, Float, DateTime, Boolean, func
 from iotfunctions import bif
-from custom.functions import InvokeModel
+from mycustom.functions import InvokeModel
 from iotfunctions.metadata import EntityType
 from iotfunctions.db import Database
 from iotfunctions.base import BaseTransformer
 from iotfunctions.bif import EntityDataGenerator
 #from iotfunctions.enginelog import EngineLogging
-from custom import settings
+from mycustom import settings
 import datetime as dt
 
 import pandas as pd
@@ -24,14 +24,12 @@ db = Database(credentials = credentials)
 db_schema = None #  set if you are not using the default
 
 # Credentials to access WML Model.
-WATSON_ML_ENDPOINT = settings.WATSON_ML_ENDPOINT
 WATSON_ML_MODEL_ID = settings.WATSON_ML_MODEL_ID
-WATSON_ML_APIKEY = settings.WATSON_ML_APIKEY
 WATSON_ML_DEPLOYMENT_ID = settings.WATSON_ML_DEPLOYMENT_ID
-
-IAM_UID = settings.IAM_UID
-IAM_PASSWORD = settings.IAM_PASSWORD
-
+WATSON_ML_ENDPOINT = settings.WATSON_ML_ENDPOINT
+WATSON_ML_APIKEY = settings.WATSON_ML_APIKEY
+#IAM_UID = settings.IAM_UID
+#IAM_PASSWORD = settings.IAM_PASSWORD
 MODEL_INPUT_COLUMNS = settings.MODEL_INPUT_COLUMNS
 
 
@@ -40,7 +38,7 @@ if MODEL_INPUT_COLUMNS and (len(MODEL_INPUT_COLUMNS) > 0):
 else:
     MODEL_INPUT_COLUMNS = []
 
-entity_name = "kb_anomaly"
+entity_name = "TURBINES_ASSET_TYPE"
 
 entity = EntityType(entity_name, db,
                     # following columns can be dynamically generated based on meters associated with each asset

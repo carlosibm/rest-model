@@ -69,18 +69,44 @@ except Exception as ex:
 # =======================================
 try:
     #  Credentials
-    print("Loading WML Environment Variables")
+    logging.debug("Loading WML Environment Variables")
     # MODEL_URL = os.environ.get("MODEL_URL")
-    IAM_UID= os.environ.get("IAM_UID")
-    IAM_PASSWORD= os.environ.get("IAM_PASSWORD")
-    WATSON_ML_ENDPOINT= os.environ.get("WATSON_ML_ENDPOINT")
-    WATSON_ML_MODEL_ID= os.environ.get("WATSON_ML_MODEL_ID")
+    # IAM_UID= os.environ.get("IAM_UID")
+    # IAM_PASSWORD= os.environ.get("IAM_PASSWORD")
     WATSON_ML_DEPLOYMENT_ID = os.environ.get("WATSON_ML_DEPLOYMENT_ID")
+    logging.debug("WATSON_ML_DEPLOYMENT_ID " + WATSON_ML_DEPLOYMENT_ID)
+
+    WATSON_ML_MODEL_ID= os.environ.get("WATSON_ML_MODEL_ID")
+    print("WATSON_ML_MODEL_ID " + WATSON_ML_MODEL_ID)
+
     WATSON_ML_APIKEY= os.environ.get("WATSON_ML_APIKEY")
+    print("WATSON_ML_APIKEY " + WATSON_ML_APIKEY)
+
+    WATSON_ML_ENDPOINT= os.environ.get("WATSON_ML_ENDPOINT")
+    print("WATSON_ML_ENDPOINT " + WATSON_ML_ENDPOINT)
+
     MODEL_INPUT_COLUMNS = os.environ.get("MODEL_INPUT_COLUMNS")
+    print("MODEL_INPUT_COLUMNS" + MODEL_INPUT_COLUMNS)
+    # print("IAM_UID " + IAM_UID)
+    # print("IAM_PASSWORD " + IAM_PASSWORD)
+
     # MODEL_OUTPUT_COLUMNS = os.environ.get("MODEL_OUTPUT_COLUMNS") # for multivariate output
 
     print("Environment Variables Loaded Successfully")
 
 except Exception as ex:
     print("ERROR: Missing Required Environment Variables")
+    '''
+    # Likely running locally trying to read in from local json file
+    '''
+    with open('wml_credentials.json', encoding='utf-8') as F:
+        credentials = json.loads(F.read())
+    #IAM_UID= credentials.get("apikey")
+    #IAM_PASSWORD= os.environ.get("IAM_PASSWORD")
+    '''
+    WATSON_ML_ENDPOINT= os.environ.get("WATSON_ML_ENDPOINT")
+    WATSON_ML_MODEL_ID= os.environ.get("WATSON_ML_MODEL_ID")
+    WATSON_ML_DEPLOYMENT_ID = os.environ.get("WATSON_ML_DEPLOYMENT_ID")
+    WATSON_ML_APIKEY= os.environ.get("WATSON_ML_APIKEY")
+    MODEL_INPUT_COLUMNS = os.environ.get("MODEL_INPUT_COLUMNS")
+    '''

@@ -6,7 +6,7 @@ from custom.functions import InvokeModel
 from iotfunctions.metadata import EntityType
 from iotfunctions.db import Database
 from iotfunctions.base import BaseTransformer
-from iotfunctions.bif import EntityDataGenerator
+#from iotfunctions.bif import EntityDataGenerator
 #from iotfunctions.enginelog import EngineLogging
 from custom import settings
 import datetime as dt
@@ -38,7 +38,7 @@ Create a database object to access Watson IOT Platform Analytics DB.
 db = Database(credentials = credentials)
 db_schema = None #  set if you are not using the default
 
-entity_name = 'kb_anomaly'
+entity_name = 'TURBINES_ASSET_TYPE'
 entity = EntityType(entity_name, db,
                     Column('deviceid',String(50)),
                     Column('anomaly_score', Integer()),

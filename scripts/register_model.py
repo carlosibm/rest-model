@@ -2,13 +2,13 @@ import json
 import logging
 from sqlalchemy import Column, Integer, String, Float, DateTime, Boolean, func
 from iotfunctions import bif
-from custom.functions import InvokeModel
+#from mycustom.functions import InvokeModel
 from iotfunctions.metadata import EntityType
 from iotfunctions.db import Database
 from iotfunctions.base import BaseTransformer
 from iotfunctions.bif import EntityDataGenerator
 #from iotfunctions.enginelog import EngineLogging
-from custom import settings
+#from mycustom import settings
 import datetime as dt
 
 import pandas as pd
@@ -34,7 +34,7 @@ with open('credentials.json', encoding='utf-8') as F:
     credentials = json.loads(F.read())
 db = Database(credentials = credentials)
 db_schema = None #  set if you are not using the default
-entity_name = 'kb_anomaly'
+entity_name = 'TURBINES_ASSET_TYPE'
 
 def register_custom_model_wml(df, columns=[]):
     # initialize WML client
@@ -63,7 +63,7 @@ def register_custom_model_wml(df, columns=[]):
         client.repository.ModelMetaNames.FRAMEWORK_VERSION: sk_version,
         client.repository.ModelMetaNames.NAME: 'anomaly_model',
         client.repository.ModelMetaNames.RUNTIME_NAME: 'python',
-        client.repository.ModelMetaNames.RUNTIME_VERSION: '3.5'
+        client.repository.ModelMetaNames.RUNTIME_VERSION: '3.6'
     }
     model_details_inmem = client.repository.store_model( pipeline, meta_props=metadata)
     model_id_inmem = model_details_inmem["metadata"]["guid"]
@@ -75,9 +75,9 @@ def register_custom_model_wml(df, columns=[]):
     # model_endpoint_url_inmem = client.deployments.get_scoring_url( deployment_details_inmem )
     # client.deployments.score( model_endpoint_url_inmem, data_to_post )
     print("Place model id and deployment in .env file")
-    print("model_id: " + model_id)
+    print("model_id: " + model_id_inmem)
     print("deployment_id: " + deployment_id)
-    return (model_id, deployment_id)
+    return (model_id_inmem, deployment_id)
 
 print("loading entity data")
 df = db.read_table(table_name=entity_name, schema=db_schema)

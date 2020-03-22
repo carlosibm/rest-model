@@ -22,15 +22,14 @@ import xml.etree.ElementTree as ET
 
 logger = logging.getLogger(__name__)
 
-
 # Specify the URL to your package here.
 # This URL must be accessible via pip install
-PACKAGE_URL = 'git+https://github.com/kkbankol-ibm/monitor-anomaly@'
+PACKAGE_URL = 'git+https://github.com/carlosibm/rest-model'
 
 class InvokeModel(BasePreload):
 # class InvokeExternalModel(BaseTransformer):
     '''
-    Load entity data, forward to a custom anomaly detection model hosted in Watson Machine Learning service.
+    Load entity data, forward to a mycustom anomaly detection model hosted in Watson Machine Learning service.
     Response returns index of rows that are classified as an anomaly, as well as the confidence score
     '''
 
@@ -52,9 +51,9 @@ class InvokeModel(BasePreload):
         # create an instance variable with the IBM IOT Platform Analytics Service Function input arguments.
 
         self.body = body
-        logging.debug('body %s' %body)
+        logger.debug('body %s' %body)
         self.column_map = column_map
-        logging.debug('column_map %s' %column_map)
+        logger.debug('column_map %s' %column_map)
         self.wml_endpoint = wml_endpoint
         # self.uid = uid
         # self.password = password
@@ -69,7 +68,7 @@ class InvokeModel(BasePreload):
 
 
     '''
-    # for invoking custom model if user wants to host outside of IBM Cloud
+    # for invoking mycustom model if user wants to host outside of IBM Cloud
     def invoke_model(self, df):
         logging.debug('invoking model')
         model_url = self.model_url
@@ -95,7 +94,7 @@ class InvokeModel(BasePreload):
     '''
 
     def get_iam_token(self, uid, password):
-        logging.debug("getting IAM token")
+        logger.debug("getting IAM token")
         url     = "https://iam.bluemix.net/oidc/token"
         headers = { "Content-Type" : "application/x-www-form-urlencoded" }
         data    = "apikey=" + apikey + "&grant_type=urn:ibm:params:oauth:grant-type:apikey"
@@ -111,24 +110,24 @@ class InvokeModel(BasePreload):
     def invoke_model(self, df, wml_endpoint, uid, password, model_id, deployment_id, apikey):
         # Taken from https://github.ibm.com/Shuxin-Lin/anomaly-detection/blob/master/Invoke-WML-Scoring.ipynb
         # Get an IAM token from IBM Cloud
-        logging.debug("posting enitity data to WML model")
+        logger.debug("posting enitity data to WML model")
         url     = "https://iam.bluemix.net/oidc/token"
         headers = { "Content-Type" : "application/x-www-form-urlencoded" }
         data    = "apikey=" + apikey + "&grant_type=urn:ibm:params:oauth:grant-type:apikey"
         response  = requests.post( url, headers=headers, data=data, auth=( uid, password ) )
         if 200 != response.status_code:
-            logging.error('error getting IAM token')
-            logging.error( response.status_code )
-            logging.error( response.reason )
+            logger.error('error getting IAM token')
+            logger.error( response.status_code )
+            logger.error( response.reason )
             return []
         else:
-            logging.debug('token successfully generated')
+            logger.debug('token successfully generated')
             iam_token = response.json()["access_token"]
             # Send data to deployed model for processing
             headers = { "Content-Type" : "application/json",
                         "Authorization" : "Bearer " + iam_token,
                         "ML-Instance-ID" : model_id }
-            logging.debug("posting to WML")
+            logger.debug("posting to WML")
             columns = ['torque', 'acc', 'load', 'speed', 'tool_type', 'travel_time']
             print("wml df.columns")
             print(df.columns)
@@ -166,7 +165,7 @@ class InvokeModel(BasePreload):
         # encoded_headers = json.dumps(self.headers).encode('utf-8')
 
         # This class is setup to write to the entity time series table
-        # To route data to a different table in a custom function,
+        # To route data to a different table in a mycustom function,
         # you can assign the table name to the out_table_name class variable
         # or create a new instance variable with the same name
 
