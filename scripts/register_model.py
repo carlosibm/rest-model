@@ -5,6 +5,7 @@ from iotfunctions import bif
 #from mycustom.functions import InvokeModel
 from iotfunctions.metadata import EntityType
 from iotfunctions.db import Database
+from iotfunctions.enginelog import EngineLogging
 from iotfunctions.base import BaseTransformer
 from iotfunctions.bif import EntityDataGenerator
 #from iotfunctions.enginelog import EngineLogging
@@ -19,6 +20,9 @@ import pandas as pd
 from sklearn.ensemble import IsolationForest
 from sklearn.pipeline import Pipeline
 import sklearn
+from iotfunctions.enginelog import EngineLogging
+EngineLogging.configure_console_logging(logging.DEBUG)
+
 with open('credentials.json', encoding='utf-8') as F:
     credentials = json.loads(F.read())
 
@@ -67,21 +71,21 @@ def register_custom_model_wml(df, columns=[]):
     }
     model_details_inmem = client.repository.store_model( pipeline, meta_props=metadata)
     model_id_inmem = model_details_inmem["metadata"]["guid"]
-    print("got model_id")
+    logging.debug("got model_id")
     deployment_details_inmem = client.deployments.create( artifact_uid=model_id_inmem, name="anomaly_model" )
     deployment_id = deployment_details_inmem["metadata"]["guid"]
     # Test model
     # data_to_post = {"values": rows}
     # model_endpoint_url_inmem = client.deployments.get_scoring_url( deployment_details_inmem )
     # client.deployments.score( model_endpoint_url_inmem, data_to_post )
-    print("Place model id and deployment in .env file")
-    print("model_id: " + model_id_inmem)
-    print("deployment_id: " + deployment_id)
+    logging.debug("Place model id and deployment in .env file")
+    logging.debug("model_id: " + model_id_inmem)
+    logging.debug("deployment_id: " + deployment_id)
     return (model_id_inmem, deployment_id)
 
-print("loading entity data")
+logging.debug("loading entity data")
 df = db.read_table(table_name=entity_name, schema=db_schema)
-print("entity data loaded")
+logging.debug("entity data loaded")
 columns = ['torque', 'acc', 'load', 'speed', 'tool_type', 'travel_time']
 model_id, deployment_id = register_custom_model_wml(df, columns)
 

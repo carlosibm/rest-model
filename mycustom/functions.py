@@ -20,13 +20,14 @@ import datetime
 import urllib3
 import xml.etree.ElementTree as ET
 
-logger = logging.getLogger(__name__)
+from iotfunctions.enginelog import EngineLogging
+EngineLogging.configure_console_logging(logging.DEBUG)
 
 # Specify the URL to your package here.
 # This URL must be accessible via pip install
 PACKAGE_URL = 'git+https://github.com/carlosibm/rest-model'
 
-class InvokeModel(BasePreload):
+class RestInvokeModel(BasePreload):
 # class InvokeExternalModel(BaseTransformer):
     '''
     Load entity data, forward to a mycustom anomaly detection model hosted in Watson Machine Learning service.
@@ -51,9 +52,9 @@ class InvokeModel(BasePreload):
         # create an instance variable with the IBM IOT Platform Analytics Service Function input arguments.
 
         self.body = body
-        logger.debug('body %s' %body)
+        logging.debug('body %s' %body)
         self.column_map = column_map
-        logger.debug('column_map %s' %column_map)
+        logging.debug('column_map %s' %column_map)
         self.wml_endpoint = wml_endpoint
         # self.uid = uid
         # self.password = password
@@ -94,7 +95,7 @@ class InvokeModel(BasePreload):
     '''
 
     def get_iam_token(self, uid, password):
-        logger.debug("getting IAM token")
+        logging.debug("getting IAM token")
         url     = "https://iam.bluemix.net/oidc/token"
         headers = { "Content-Type" : "application/x-www-form-urlencoded" }
         data    = "apikey=" + apikey + "&grant_type=urn:ibm:params:oauth:grant-type:apikey"
@@ -110,27 +111,27 @@ class InvokeModel(BasePreload):
     def invoke_model(self, df, wml_endpoint, uid, password, model_id, deployment_id, apikey):
         # Taken from https://github.ibm.com/Shuxin-Lin/anomaly-detection/blob/master/Invoke-WML-Scoring.ipynb
         # Get an IAM token from IBM Cloud
-        logger.debug("posting enitity data to WML model")
+        print("posting enitity data to WML model")
         url     = "https://iam.bluemix.net/oidc/token"
         headers = { "Content-Type" : "application/x-www-form-urlencoded" }
         data    = "apikey=" + apikey + "&grant_type=urn:ibm:params:oauth:grant-type:apikey"
         response  = requests.post( url, headers=headers, data=data, auth=( uid, password ) )
         if 200 != response.status_code:
-            logger.error('error getting IAM token')
-            logger.error( response.status_code )
-            logger.error( response.reason )
+            logging.error('error getting IAM token')
+            logging.error( response.status_code )
+            logging.error( response.reason )
             return []
         else:
-            logger.debug('token successfully generated')
+            logging.debug('token successfully generated')
             iam_token = response.json()["access_token"]
             # Send data to deployed model for processing
             headers = { "Content-Type" : "application/json",
                         "Authorization" : "Bearer " + iam_token,
                         "ML-Instance-ID" : model_id }
-            logger.debug("posting to WML")
+            logging.debug("posting to WML")
             columns = ['torque', 'acc', 'load', 'speed', 'tool_type', 'travel_time']
-            print("wml df.columns")
-            print(df.columns)
+            logging.debug("wml df.columns")
+            logging.debug(df.columns)
             s_df = df[columns]
             rows = [list(r) for i,r in s_df.iterrows()]
             payload = {"values": rows}
@@ -250,7 +251,7 @@ class InvokeModel(BasePreload):
             }
             entity_type.trace_append(created_by = self,
                                      msg = 'http data was missing columns. Adding values.',
-                                     log_method=logger.debug,
+                                     log_method=logging.debug,
                                      **kwargs)
             for m in missing_cols:
                 if m==entity_type._timestamp:
@@ -289,7 +290,7 @@ class InvokeModel(BasePreload):
         logging.debug( "write_frame complete" )
         entity_type.trace_append(created_by=self,
                                  msg='Wrote data to table',
-                                 log_method=logger.debug,
+                                 log_method=logging.debug,
                                  **kwargs)
         logging.debug( "appended trace" )
         return True

@@ -9,10 +9,14 @@ from iotfunctions.base import BaseTransformer
 from iotfunctions.bif import EntityDataGenerator
 #from iotfunctions.enginelog import EngineLogging
 from mycustom import settings
+
 import datetime as dt
 
 import pandas as pd
 import numpy as np
+
+from iotfunctions.enginelog import EngineLogging
+EngineLogging.configure_console_logging(logging.DEBUG)
 
 with open('credentials.json', encoding='utf-8') as F:
     credentials = json.loads(F.read())

@@ -2,18 +2,20 @@ import json
 import logging
 from sqlalchemy import Column, Integer, String, Float, DateTime, Boolean, func
 from iotfunctions import bif
-from custom.functions import InvokeModel
+from mycustom.functions import InvokeModel
 from iotfunctions.metadata import EntityType
 from iotfunctions.db import Database
 from iotfunctions.base import BaseTransformer
 #from iotfunctions.bif import EntityDataGenerator
-#from iotfunctions.enginelog import EngineLogging
-from custom import settings
+
+from mycustom import settings
 import datetime as dt
 
 import pandas as pd
 import numpy as np
-#EngineLogging.configure_console_logging(logging.DEBUG)
+
+from iotfunctions.enginelog import EngineLogging
+EngineLogging.configure_console_logging(logging.DEBUG)
 
 '''
 # Replace with a credentials dictionary or provide a credentials
@@ -50,18 +52,18 @@ entity = EntityType(entity_name, db,
                     Column("travel_time", Float()),
                     **{
                       '_timestamp' : 'evt_timestamp',
-                      # '_production_mode': False,
+                       '_production_mode': False,
                       '_db_schema' : db_schema}
 )
 
 # db.unregister_functions(["InvokeExternalModel"])
 # exit()
-db.register_functions([InvokeModel])
+db.register_functions([RestInvokeModel])
 # exit()
-print("Function registered")
+logging.debug("Function registered")
 
 entity.register(raise_error=False)
-print("Entity registered")
+logging.debug("Entity registered")
 
 # generate data and set anomaly_score to zeros
 entity.generate_data(days=2.0, drop_existing=True)
